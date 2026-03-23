@@ -13,11 +13,17 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0"
 }
 
-def send_line(msg):
-    requests.post(
-        "https://notify-api.line.me/api/notify",
-        headers={"Authorization": f"Bearer {LINE_TOKEN}"},
-        data={"message": msg}
+def send_telegram(msg):
+    token = "你的bot token"
+    chat_id = "你的chat_id"
+
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    data = {
+        "chat_id": chat_id,
+        "text": msg
+    }
+
+    requests.post(url, data=data)
     )
 
 def load_seen():
