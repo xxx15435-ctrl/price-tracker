@@ -15,7 +15,7 @@ HEADERS = {
 
 def send_telegram(msg):
     token = "token"
-    chat_id = "你的chat_id"
+    chat_id = "8529293240"
 
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     data = {
