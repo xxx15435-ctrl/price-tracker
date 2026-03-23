@@ -60,7 +60,7 @@ def main():
 
         if link not in seen:
             msg = f"🆕 新商品！\n{title}\n{link}"
-            send_line(msg)
+            send_telegram(msg)
             new_seen.add(link)
             count += 1
 
