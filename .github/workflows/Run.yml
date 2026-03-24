@@ -31,11 +31,17 @@ jobs:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python tracker.py
-
+  
       - name: 保存已讀取的商品紀錄 (seen.json)
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add seen.json
-          git commit -m "Update seen.json" || echo "沒有新商品，不需更新紀錄"
-          git push
+          # 只有在檔案存在的情況下才執行 add
+          if [ -f seen.json ]; then
+            git add seen.json
+            # 檢查是否有內容變動，有變動才 commit，避免沒新商品時報錯
+            git diff --quiet && git diff --staged --quiet || (git commit -m "Update seen.json" && git push)
+          else
+            echo "尚未產生 seen.json，跳過本次紀錄更新"
+          fi
+
