@@ -1,25 +1,41 @@
 name: Price Tracker
 
+# 設定觸發時間
 on:
+  push:
+    branches: [ "main" ] # 當你 push 程式碼時跑一次
   schedule:
-    - cron: "0 * * * *"  # 每小時
-  workflow_dispatch:
+    - cron: '0 */4 * * *' # 每 4 小時自動執行一次 (可以依需求調整)
+  workflow_dispatch:      # 讓你可以手動按按鈕執行
 
 jobs:
-  run:
+  run-tracker:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: 檢查程式碼
         uses: actions/checkout@v3
 
-      - name: Setup Python
+      - name: 設定 Python 環境
         uses: actions/setup-python@v4
         with:
-          python-version: 3.11
+          python-version: '3.11'
 
-      - name: Install packages
-        run: pip install -r requirements.txt
+      - name: 安裝必要套件
+        run: |
+          pip install -r requirements.txt
 
-      - name: Run script
+      - name: 執行爬蟲並傳送通知
+        env:
+          # 這裡就是接水管的地方：左邊是程式碼用的變數，右邊是 GitHub 的 Secret
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python tracker.py
+
+      - name: 保存已讀取的商品紀錄 (seen.json)
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add seen.json
+          git commit -m "Update seen.json" || echo "沒有新商品，不需更新紀錄"
+          git push
