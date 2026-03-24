@@ -14,7 +14,7 @@ HEADERS = {
 }
 
 def send_telegram(msg):
-    token = "token"
+    token = "TG_YOKEN"
     chat_id = "8529293240"
 
     url = f"https://api.telegram.org/bot{token}/sendMessage"
