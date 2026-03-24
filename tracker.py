@@ -3,28 +3,23 @@ from bs4 import BeautifulSoup
 import json
 import os
 
-# 🔍 搜尋網址（BigGo 最新排序）
 URL = "https://biggo.com.tw/s/iPhone+17+Pro+Max+512GB/?sort=new"
-
-# LINE Notify Token（從環境變數拿）
-LINE_TOKEN = os.getenv("LINE_TOKEN")
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0"
 }
 
 def send_telegram(msg):
-    token = "TG_YOKEN"
-    chat_id = "8529293240"
+    token = os.getenv("TG_YOKEN")
+    chat_id = os.getenv("CHAT_ID")
 
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     data = {
-        "chat_id": chat_id,
+        "chat_id": 8529293240,
         "text": msg
     }
 
     requests.post(url, data=data)
-    )
 
 def load_seen():
     if os.path.exists("seen.json"):
@@ -40,7 +35,7 @@ def main():
     res = requests.get(URL, headers=HEADERS)
     soup = BeautifulSoup(res.text, "html.parser")
 
-    items = soup.select("a")  # BigGo用a標籤抓連結（簡化版）
+    items = soup.select("a")
 
     seen = load_seen()
     new_seen = set(seen)
@@ -54,7 +49,6 @@ def main():
         if not link or "http" not in link:
             continue
 
-        # 只抓包含關鍵字的
         if "iPhone" not in title:
             continue
 
